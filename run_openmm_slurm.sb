@@ -1,0 +1,66 @@
+#!/bin/csh
+
+#SBATCH --account=
+#SBATCH --job-name="system_prod"
+#SBATCH --output="system_prod.%j.%N.out"
+#SBATCH --partition=gpu-shared
+#SBATCH --nodes=1
+#SBATCH --gpus=1
+#SBATCH --export=ALL
+#SBATCH --ntasks-per-node=1
+#SBATCH -t 23:59:59
+#SBATCH --no-requeue
+
+# Load modules
+module purge
+module reset
+module load slurm
+module load gpu
+module load gcc
+module load cuda/11.0.2
+
+# Copy files to scratch folder
+cp -R $SLURM_SUBMIT_DIR/* /scratch/$USER/job_$SLURM_JOBID/
+
+# Navigate to scratch dir where job is running
+cd /scratch/$USER/job_$SLURM_JOBID
+
+init=step3_input
+equil_prefix=step4_equilibration
+prod_prefix=step5_production
+prod_step=step5
+
+# Equilibration
+python -u openmm_run.py -i ${equil_prefix}.inp -t toppar.str -p ${init}.psf -c ${init}.crd -b sysinfo.dat -orst ${equil_prefix}.rst -odcd ${equil_prefix}.dcd > ${equil_prefix}.out
+
+# Production stage 0
+python -u openmm_run.py -i ${prod_prefix}.inp -t toppar.str -p ${init}.psf -c ${init}.crd -irst ${equil_prefix}.rst -orst ${prod_step}_0.rst -odcd ${prod_step}_0.dcd > ${prod_step}_0.out
+
+# Copy files back to working directory
+# If there is an error at this stage, use the scancel command to kill the job
+cp /scratch/$USER/job_$SLURM_JOBID/${prod_prefix}_*.out $SLURM_SUBMIT_DIR
+cp /scratch/$USER/job_$SLURM_JOBID/${prod_prefix}_*.rst $SLURM_SUBMIT_DIR
+cp /scratch/$USER/job_$SLURM_JOBID/${prod_prefix}_*.dcd $SLURM_SUBMIT_DIR
+
+# Set counters for loop
+e=0
+f=1
+
+# Set number of production stages after prod_0
+num_cycles=9
+
+# Total sim time = [nstep*dt*(num_cycles+1)/1000] 
+while [ $f -le ${num_cycles} ]; do
+
+# Resume production
+python -u openmm_run.py -i ${prod_prefix}.inp -t toppar.str -p ${init}.psf -c ${init}.crd -irst ${prod_step}_$e.rst -orst ${prod_step}_$f.rst -odcd ${prod_step}_$f.dcd > ${prod_step}_$f.out
+
+# Copy files back to working directory
+cp /scratch/$USER/job_$SLURM_JOBID/${prod_prefix}_*.out $SLURM_SUBMIT_DIR
+cp /scratch/$USER/job_$SLURM_JOBID/${prod_prefix}_*.rst $SLURM_SUBMIT_DIR
+cp /scratch/$USER/job_$SLURM_JOBID/${prod_prefix}_*.dcd $SLURM_SUBMIT_DIR
+
+# Update counters for loop
+e=$[$e+1]
+f=$[$f+1]
+done
