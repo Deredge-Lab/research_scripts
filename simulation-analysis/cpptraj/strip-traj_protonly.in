@@ -1,0 +1,15 @@
+# Load in parameter/topology file
+parm toplogy.parm7
+
+# Load in trajectory files sequentially, striding every 10 frames
+trajin system-name_prod*.nc 1 last 10  
+
+# Wrap PBC
+autoimage
+
+# Remove water and counterions, ignore box coords
+strip :WAT,K+,Cl- nobox parmout system-name_protonly.parm7
+
+# Write out trajectory file
+trajout system-name_protonly.nc
+go
