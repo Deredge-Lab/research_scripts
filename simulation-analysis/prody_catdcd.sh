@@ -22,8 +22,8 @@ files=()
 for file in $(ls -v $prefix*.dcd); do files=(${files[*]} "$file"); done
 echo "${files[*]}"
 
-# Activate conda environment where ProDy is installed
+### Activate conda environment where ProDy is installed
 source activate openMM
 
-# Concatenate traj files in order
+### Concatenate traj files in order
 prody catdcd -o $outfile -s $selection --psf $psf --pdb $pdb --first $first --last $last --stride $stride --align $align dcd ${files[*]}

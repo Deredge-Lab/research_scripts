@@ -4,8 +4,8 @@ import os
 import numpy as np
 import statistics
 
-file_path = '/file/path/to/system-name_dssp.csv'
-save_loc = '/file/path/to/outdir'
+file_path = '/file/path/to/system-name_dssp.csv'    # Path to DSSP output file
+save_loc = '/file/path/to/outdir'                   # Location to write out file w/ avg sec struct values (alpha helix, beta sheet, random coil)
 
 class AvgFile:
     def __init__(self, *args):
