@@ -1,0 +1,14 @@
+mini_nstep  = 2500                              # Number of steps for minimization
+mini_Tol    = 1.0                               # Minimization energy tolerance (kJ/mol)
+                                         
+gen_vel     = no                                # Generate initial velocities
+
+nstep       = 0                                 # Number of steps to run
+
+pcouple     = no                                # Turn on/off pressure coupling
+                                         
+cons        = None                              # Constraints mehtod
+                                         
+rest        = yes                               # Turn on/off restraints
+fc_bb       = 400.0                             # Positional restraint force constant for protein backbone (kJ/mol/nm^2)
+fc_sc       = 400.0                             # Positional restraint force constant for protein side-chain (kJ/mol/nm^2)

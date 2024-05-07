@@ -4,7 +4,7 @@ parm toplogy.parm7
 # Load in trajectory files sequentially, striding every 10 frames
 trajin system-name_prod*.nc 1 last 10  
 
-# Wrap PBC
+# Wrap PBC coords
 autoimage
 
 # Remove water and counterions, ignore box coords

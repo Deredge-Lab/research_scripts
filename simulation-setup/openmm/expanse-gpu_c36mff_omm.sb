@@ -1,6 +1,6 @@
 #!/bin/csh
 
-#SBATCH --account=
+#SBATCH --account=mda123
 #SBATCH --job-name="system_prod"
 #SBATCH --output="system_prod.%j.%N.out"
 #SBATCH --partition=gpu-shared

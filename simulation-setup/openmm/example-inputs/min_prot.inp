@@ -1,0 +1,13 @@
+mini_nstep  = 2500                              # Number of steps for minimization
+mini_Tol    = 1.0                               # Minimization energy tolerance
+                                         
+gen_vel     = no                                # Generate initial velocities
+                                         
+nstep       = 0                                 # Number of steps to run
+
+pcouple     = no                                # Turn on/off pressure coupling
+                                         
+cons        = HBonds                            # Constraints mehtod
+                                         
+rest        = no                                # Turn on/off restraints
+
